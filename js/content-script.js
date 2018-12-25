@@ -1,6 +1,4 @@
-﻿console.log('这是content script!');
-
-// 注意，必须设置了run_at=document_start 此段代码才会生效
+﻿// 注意，必须设置了run_at=document_start 此段代码才会生效
 document.addEventListener('DOMContentLoaded', function()
 {
 	// 注入自定义JS
@@ -13,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function()
 		{
 			objs[i].setAttribute('_target', 'blank');
 		}
-		console.log('已处理谷歌超链接！');
 	}
 	else if(location.host == 'www.baidu.com')
 	{
@@ -51,8 +48,8 @@ document.addEventListener('DOMContentLoaded', function()
 			$('[data-tuiguang]').parents('[data-click]').remove();
 		}
 		fuckBaiduAD();
-		initCustomPanel();
-		initCustomEventListen();
+		// initCustomPanel();
+		// initCustomEventListen();
 	}
 });
 

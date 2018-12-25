@@ -2,7 +2,7 @@
 	// 清单文件的版本，这个必须写，而且必须是2
 	"manifest_version": 2,
 	// 插件的名称
-	"name": "demo",
+	"name": "AutoStudy",
 	// 插件的版本
 	"version": "1.0.0",
 	// 插件描述
@@ -72,12 +72,6 @@
 	"web_accessible_resources": ["js/inject.js"],
 	// 插件主页，这个很重要，不要浪费了这个免费广告位
 	"homepage_url": "https://www.baidu.com",
-	// 覆盖浏览器默认页面
-	"chrome_url_overrides":
-	{
-		// 覆盖浏览器默认的新标签页
-		"newtab": "newtab.html"
-	},
 	// Chrome40以前的插件配置页写法
 	"options_page": "options.html",
 	// Chrome40以后的插件配置页写法，如果2个都写，新版Chrome只认后面这一个
