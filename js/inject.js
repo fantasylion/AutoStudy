@@ -27,8 +27,6 @@ function sendMessageToContentScriptByPostMessage(data)
 })();
 
 function itCanDoAutoPlay() {
-	console.log(window.location.href.indexOf("http://www.shgb.gov.cn/html/indexvideo.html#/beforevideo"));
-	console.log(window.location.href);
 	return window.location.href.indexOf("http://www.shgb.gov.cn/html/indexvideo.html#/beforevideo") >= 0;
 }
 
@@ -72,11 +70,19 @@ function LastUnread() {
 	_this.duration = undefined;
 	function init() {
 		$(".course_list li").each(function(index, element) {
-			updateInfo( index, $(element) );
+			var data = updateInfo( index, $(element) );
+			if ( !!data ) {
+				return false;
+			}
 		});
 	}
 
 	function updateInfo( index, element ) {
+		if ($(element).length <= 0) {
+			_this.currentObj   = undefined;
+    		_this.currentIndex = undefined;
+			return "nodata";
+		}
 		if ( $(element.find("span")[4]).html().indexOf("100%") < 0 ) {
     		_this.currentObj   = element[0];
     		_this.currentIndex = index;
@@ -84,9 +90,12 @@ function LastUnread() {
     		var dataStr = $(element.find("span")[2]).html();
     		var durations = /\d{2}:\d{2}:\d{2}/g.exec(dataStr)
     		_this.duration = durations[0];
+    		var datas = durations[0].split(":");
+    		_this.duration = parseFloat(datas[2]) * 1000 + parseFloat(datas[1]) * 60 * 1000 + parseFloat(datas[0]) * 60 * 60 * 1000;
     		return element;
 	    }
 	}
+
 	init();
 
 	_this.currentUnread = function() {
@@ -94,9 +103,13 @@ function LastUnread() {
 	}
 
 	_this.nextUnread = function() {
-		var obj = updateInfo( _this.currentIndex+1, $(element).next() );
+		var _currentObj = $(_this.currentObj).next();
+		var _currentIndex = _this.currentIndex + 1;
+		var obj = updateInfo( _currentIndex, _currentObj );
 		while( !obj ) {
-			obj = updateInfo( _this.currentIndex+1, $(element).next() );
+			_currentObj = $(_currentObj).next();
+			_currentIndex++;
+			obj = updateInfo( _currentIndex, _currentObj );
 		}
 		return _this.currentObj;
 	}
@@ -110,7 +123,21 @@ function LastUnread() {
 function startStudy() {
 	var lastUnread    = new LastUnread();
 	var currentUnread = lastUnread.currentUnread();
-	currentUnread.find(".btn").attr("target", "_blank")[0].click();
+	clickNext( currentUnread );
+	setTimeout(function() {
+		autoStartNext( lastUnread );
+	}, lastUnread.duration);
+}
+
+function autoStartNext( lastUnread ) {
+	var nextUnread = lastUnread.nextUnread();
+	clickNext( nextUnread );
+	setTimeout(function(){
+		autoStartNext( lastUnread );
+	}, lastUnread.duration);
+}
+function clickNext( currentUnread ) {
+	$(currentUnread).find(".btn").attr("target", "_blank")[0].click();
 }
 
 /**
