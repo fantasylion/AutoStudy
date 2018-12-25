@@ -154,10 +154,11 @@ function autoPlay( finishTime ) {
 				console.log(err);
 				return;
 			}
-			console.log("clearInterval");
 			clearInterval(interval);
 			setTimeout(function() {
-				console.log("do the finished");
+				window.opener=null;
+				window.open('','_self');
+				window.close();
 			}, finishTime );	
 		}
 	}, 1000);
